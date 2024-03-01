@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from main import app
+from app.main import app
 from settings import CONFIG_FILE
 from fastapi.testclient import TestClient
 
@@ -41,27 +41,17 @@ class TestNewUser:
         assert response.status_code == 200
         assert response.json() == {"users": default_users + username}
 
-
     def test_adding_existing_user(self, temp_config):
         # Get all users
         response = client.get("/users")
         assert response.status_code == 200
         assert response.json() == {"users": default_users}
 
-        # Add new user
-        response = client.post("/users", data={"username": username})
-        assert response.status_code == 201
-
-        # Get all users
-        response = client.get("/users")
-        assert response.status_code == 200
-        assert response.json() == {"users": default_users + username}
-
-        # Add the same user
-        response = client.post("/users", data={"username": username})
+        # Add an existing user
+        response = client.post("/users", data={"username": default_users[0]})
         assert response.status_code == 400
 
         # Get all users
         response = client.get("/users")
         assert response.status_code == 200
-        assert response.json() == {"users": default_users + username}
+        assert response.json() == {"users": default_users}
