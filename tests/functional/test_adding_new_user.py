@@ -1,11 +1,12 @@
 from unittest.mock import patch
 
-from tests.fixtures import client, default_users, username, fake_users_processor
+from tests.fixtures import client, fake_users_processor
+from tests.defaults import default_users, username
 
 
 class TestNewUser:
 
-    def test_adding_not_existing_user(self, fake_users_processor):
+    def test_adding_not_existing_user(self, client, fake_users_processor):
 
         with patch("app.main.users", fake_users_processor):
 
@@ -23,7 +24,7 @@ class TestNewUser:
             assert response.status_code == 200
             assert response.json() == {"users": default_users + [username]}
 
-    def test_adding_existing_user(self, fake_users_processor):
+    def test_adding_existing_user(self, client, fake_users_processor):
         with patch("app.main.users", fake_users_processor):
             # Get all users
             response = client.get("/users")

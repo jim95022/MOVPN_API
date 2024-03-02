@@ -1,11 +1,12 @@
 from unittest.mock import patch
 
-from tests.fixtures import client, default_users, fake_users_processor, username
+from tests.fixtures import client, fake_users_processor
+from tests.defaults import default_users, username
 
 
 class TestRemovingUser:
 
-    def test_removing_existing_user(self, fake_users_processor):
+    def test_removing_existing_user(self, client, fake_users_processor):
 
         with patch("app.main.users", fake_users_processor):
             # Get all users
@@ -23,7 +24,7 @@ class TestRemovingUser:
             assert response.status_code == 200
             assert response.json() == {"users": default_users[1:]}
 
-    def test_removing_not_existing_user(self, fake_users_processor):
+    def test_removing_not_existing_user(self, client, fake_users_processor):
         with patch("app.main.users", fake_users_processor):
             # Get all users
             response = client.get("/users")

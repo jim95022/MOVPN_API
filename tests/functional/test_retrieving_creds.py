@@ -1,13 +1,13 @@
-from pathlib import Path
 from unittest.mock import patch
 
 
-from tests.fixtures import username, fake_users_processor, client
+from tests.fixtures import client, fake_users_processor
+from tests.defaults import username
 
 
 class TestRetrieveCreds:
 
-    def test_retrieve_creds_of_existing_user(self, fake_users_processor):
+    def test_retrieve_creds_of_existing_user(self, client, fake_users_processor):
         with patch("app.main.users", fake_users_processor):
             # get all users
             response = client.get("/users")
@@ -28,7 +28,7 @@ class TestRetrieveCreds:
             assert qr_code.content == user_qr_code_path.read_bytes()
             assert conf.content == user_conf_path.read_bytes()
 
-    def test_retrieve_creds_of_not_existing_user(self, fake_users_processor):
+    def test_retrieve_creds_of_not_existing_user(self, client, fake_users_processor):
         with patch("app.main.users", fake_users_processor):
             # get all users
             response = client.get("/users")

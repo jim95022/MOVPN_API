@@ -7,9 +7,10 @@ from app.main import app
 from app.users import UsersProcessor
 from settings import CONFIG_FILE, CONFIG_FOLDER
 
-client = TestClient(app)
-username = "test_user"
-default_users = ["phone", "laptop", "desktop"]
+
+@pytest.fixture
+def client():
+    return TestClient(app)
 
 
 @pytest.fixture

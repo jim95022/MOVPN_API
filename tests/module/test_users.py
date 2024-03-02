@@ -1,6 +1,7 @@
 import pytest
 
-from tests.fixtures import default_users, username, fake_users_processor
+from tests.fixtures import fake_users_processor
+from tests.defaults import default_users, username
 
 
 class TestUsers:
