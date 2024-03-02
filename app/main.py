@@ -1,5 +1,5 @@
-from fastapi import FastAPI, HTTPException
-from starlette import status
+from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import FileResponse
 
 from app.users import UsersProcessor
 from settings import CONFIG_FILE
@@ -22,8 +22,36 @@ async def add_users(username: str):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=repr(e))
 
 
+@app.get("/users/{username}/qr")
+async def retrieve_users(username: str):
+    filename = f"{username}.png"
+    try:
+        qr_code_path = users.get_cred_path(filename)
+    except FileNotFoundError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{username} is not exists")
+    return FileResponse(
+        path=qr_code_path,
+        filename=filename,
+        media_type='multipart/form-data'
+    )
+
+
+@app.get("/users/{username}/conf")
+async def retrieve_users(username: str):
+    filename = f"{username}.conf"
+    try:
+        conf_path = users.get_cred_path(filename)
+    except FileNotFoundError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{username} is not exists")
+    return FileResponse(
+        path=conf_path,
+        filename=filename,
+        media_type='multipart/form-data'
+    )
+
+
 @app.delete("/users/{username}", status_code=status.HTTP_202_ACCEPTED)
-async def add_users(username: str):
+async def remove_users(username: str):
     try:
         users.remove(username)
     except ValueError as e:

@@ -7,9 +7,11 @@ class UsersProcessor:
 
     usernames_pattern = r"users:\s+((- .*?\s+)+)"
 
-    def __init__(self, config_file: Path | str, config_folder: str):
-        if isinstance(config_folder, str):
+    def __init__(self, config_file: Path | str, config_folder:  Path | str):
+        if isinstance(config_file, str):
             config_file = Path(config_file)
+        if isinstance(config_folder, str):
+            config_folder = Path(config_folder)
         self.config_file = config_file
         self.config_folder = config_folder
 
@@ -42,8 +44,13 @@ class UsersProcessor:
         users.append(username)
         self._update_config_with_users(users)
 
-    def retrieve_creds(self, username: str) -> Any:
-        raise NotImplementedError
+    def get_cred_path(self, cred_file_name: str) -> Any:
+        cred_path = self.config_folder / cred_file_name
+
+        if not cred_path.is_file():
+            raise FileNotFoundError(f"{cred_path} is not exists")
+
+        return cred_path
 
     def remove(self, username: str) -> None:
         users = self.get()

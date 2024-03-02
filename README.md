@@ -13,12 +13,15 @@ This project provides a simple API for external control of [Algo VPN](https://gi
 > 
 > **user creds** - QR code and/or connection cert
 
-🚨 _endpoints below are not implemented yet_
 
 - `GET /users`                   get all **users**
 - `POST /users/<username>`       add new **user**
-- `GET /users/<username>`        retrieve **user creds**
+- `GET /users/<username>/qr`     retrieve **user qr code**
+- `GET /users/<username>/conf`   retrieve **user cert**
 - `DELETE /users/<username>`     remove **user**
+
+🚨 _endpoints below are not implemented yet_
+
 - `GET /stat`                    load statistics
 
 ## Installation
