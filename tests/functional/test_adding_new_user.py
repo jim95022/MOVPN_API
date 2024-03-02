@@ -1,8 +1,10 @@
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
 from app.main import app
+from app.users import UsersProcessor
 from settings import CONFIG_FILE
 from fastapi.testclient import TestClient
 
@@ -26,20 +28,27 @@ class TestNewUser:
 
         return temp_config
 
-    def test_adding_not_existing_user(self, temp_config):
-        # Get all users
-        response = client.get("/users")
-        assert response.status_code == 200
-        assert response.json() == {"users": default_users}
+    @pytest.fixture
+    def users(self, temp_config):
+        return UsersProcessor(config_file=temp_config, config_folder="")
 
-        # Add new user
-        response = client.post("/users", data={"username": username})
-        assert response.status_code == 201
+    def test_adding_not_existing_user(self, users):
 
-        # Get all users
-        response = client.get("/users")
-        assert response.status_code == 200
-        assert response.json() == {"users": default_users + username}
+        with patch("app.main.users", users):
+
+            # Get all users
+            response = client.get("/users")
+            assert response.status_code == 200
+            assert response.json() == {"users": default_users}
+
+            # Add new user
+            response = client.post(f"/users/{username}")
+            assert response.status_code == 201
+
+            # Get all users
+            response = client.get("/users")
+            assert response.status_code == 200
+            assert response.json() == {"users": default_users + [username]}
 
     def test_adding_existing_user(self, temp_config):
         # Get all users
