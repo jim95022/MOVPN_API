@@ -50,17 +50,19 @@ class TestNewUser:
             assert response.status_code == 200
             assert response.json() == {"users": default_users + [username]}
 
-    def test_adding_existing_user(self, temp_config):
-        # Get all users
-        response = client.get("/users")
-        assert response.status_code == 200
-        assert response.json() == {"users": default_users}
+    def test_adding_existing_user(self, users):
+        with patch("app.main.users", users):
+            # Get all users
+            response = client.get("/users")
+            assert response.status_code == 200
+            assert response.json() == {"users": default_users}
 
-        # Add an existing user
-        response = client.post("/users", data={"username": default_users[0]})
-        assert response.status_code == 400
+            # Add an existing user
+            existing_user = default_users[0]
+            response = client.post(f"/users/{existing_user}")
+            assert response.status_code == 400
 
-        # Get all users
-        response = client.get("/users")
-        assert response.status_code == 200
-        assert response.json() == {"users": default_users}
+            # Get all users
+            response = client.get("/users")
+            assert response.status_code == 200
+            assert response.json() == {"users": default_users}

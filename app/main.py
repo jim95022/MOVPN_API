@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from starlette import status
 
 from app.users import UsersProcessor
@@ -16,4 +16,7 @@ async def get_users():
 
 @app.post("/users/{username}", status_code=status.HTTP_201_CREATED)
 async def add_users(username: str):
-    users.add(username)
+    try:
+        users.add(username)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=repr(e))
