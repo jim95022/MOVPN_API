@@ -22,6 +22,7 @@ This project provides a simple API for external control of [Algo VPN](https://gi
 
 🚨 _endpoints below are not implemented yet_
 
+- `POST /users/sync`             synchronize all users
 - `GET /stat`                    load statistics
 
 ## Installation
