@@ -2,10 +2,10 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import FileResponse
 
 from app.users import UsersProcessor
-from settings import CONFIG_FILE
+from settings import config_file_path, config_folder_path
 
 app = FastAPI()
-users = UsersProcessor(config_file=CONFIG_FILE, config_folder="")
+users = UsersProcessor(config_file=config_file_path, config_folder=config_folder_path)
 
 
 @app.get("/users")
@@ -55,4 +55,4 @@ async def remove_users(username: str):
     try:
         users.remove(username)
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=repr(e))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.__str__())
