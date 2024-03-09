@@ -27,4 +27,5 @@ This project provides a simple API for external control of [Algo VPN](https://gi
 
 
 ## Installation
+
 > ⚠️ Work In Progress ⚠️
